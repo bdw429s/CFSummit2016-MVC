@@ -1,8 +1,10 @@
 {
     "dependencies":{
-        "fw1":"^4.0.0"
+        "coldbox":"be",
+        "cbdebugger":"^1.4.0+00008"
     },
     "installPaths":{
-        "fw1":"framework"
+        "coldbox":"coldbox",
+        "cbdebugger":"modules\\cbdebugger"
     }
 }

@@ -10,11 +10,11 @@
             <link rel="stylesheet" href="/assets/css/dataTables.bootstrap.min.css" />
             <link rel="stylesheet" href="/assets/css/font-awesome.min.css" />
             <link rel="stylesheet" href="/assets/css/custom.css" />
-            <title>#rc.appSettings.title#</title>
+            <title>#getSetting( 'title' )#</title>
         </head>
         <body role="document">
             <div class="container" role="main">
-                #body#	<!--- body is result of views --->
+                #renderView()#	<!--- body is result of views --->
             </div>
             <footer class="footer">
                 <div class="container">
@@ -22,8 +22,8 @@
                         ColdFusion Summit 2016
                     </p>
                     <p class="text-muted text-center small">
-                        Powered by Adobe ColdFusion version #server.coldfusion.productversion#, 
-                        FW/1 version #variables.framework.version#, Bootstrap 3, jQuery, 
+                        Powered by CFML version #server.coldfusion.productversion#, 
+                        ColdBox version #getSetting( 'version', true )#, Bootstrap 3, jQuery, 
                         DataTables, and Font Awesome.<br>
                         This request took <cfoutput>#getTickCount() - rc.startTime#</cfoutput>ms.
                     </p>

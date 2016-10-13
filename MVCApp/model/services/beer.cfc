@@ -12,7 +12,7 @@ component displayname="Beer service" accessors="true" {
             FROM dbo.Beer be
             LEFT JOIN dbo.Brewery br ON be.breweryId = br.id
             ORDER BY be.name ASC"
-        ); // queryExecute equivalent to <cfquery>
+        ); // queryExecute equivalent to cfquery
     }
     
     public query function getBeer ( required numeric id ) {
@@ -26,7 +26,7 @@ component displayname="Beer service" accessors="true" {
             FROM dbo.Beer
             WHERE id = :id",
             { id = { value = arguments.id, cfsqltype = 'integer' } } 
-            // equivalent to <cfqueryparam>
+            // equivalent to cfqueryparam
         );
     }
     

@@ -9,7 +9,7 @@ component displayname="Brewery service" accessors="true" {
                     ,country
             FROM dbo.Brewery
             ORDER BY name"
-        ); // queryExecute equivalent to <cfquery>
+        ); // queryExecute equivalent to cfquery
     }
     
     public query function getBrewery ( required numeric id ) {
@@ -21,7 +21,7 @@ component displayname="Brewery service" accessors="true" {
                     ,country
             FROM dbo.Brewery
             WHERE id = :id",
-            { id = { value = arguments.id, cfsqltype = 'integer' } } // equivalent to <cfqueryparam>
+            { id = { value = arguments.id, cfsqltype = 'integer' } } // equivalent to cfqueryparam
         );
     }
     

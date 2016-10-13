@@ -1,23 +1,18 @@
-component displayname="Beer controller"  accessors="true" {
+component displayname="Beer controller" {
 
-    property beerService; // Dependency Injection in action!
-    property breweryService;
-
-    public any function init ( fw ) {
-        variables.fw = fw;
-        return this;
+    property name='beerService'		inject='beer'; // Dependency Injection in action!
+    property name='breweryService'	inject='brewery';
+    
+    public void function index () {
+        setNextEvent( 'beer.list' );
     }
     
-    public void function default ( rc ) {
-        variables.fw.redirect( action='beer.list', append='none');
-    }
-    
-    public void function list ( rc ) {
+    public void function list ( event, rc, prc ) {
         rc.beers = beerService.getAllBeers();
         rc.subtitle = "Beer List";
     }
     
-    public void function add ( rc ) {
+    public void function add ( event, rc, prc ) {
         rc.beerId = 0;
         rc.breweryID = 0;
         rc.beerName = '';
@@ -27,10 +22,10 @@ component displayname="Beer controller"  accessors="true" {
         rc.beerTypes = beerService.getBeerTypes();
         rc.breweries = breweryService.getAllBreweries();
         rc.subtitle = 'Add Beer';
-        variables.fw.setView( 'beer.edit' );
+        event.setView( 'beer/edit' );
     }
     
-    public void function edit ( rc ) {
+    public void function edit ( event, rc, prc ) {
         if ( StructKeyExists( rc, 'beerId' ) && rc.beerId > 0 ) {
             var beer = beerService.getBeer( rc.beerId );
             rc.breweryId = beer.breweryId;
@@ -44,17 +39,17 @@ component displayname="Beer controller"  accessors="true" {
         rc.subtitle = 'Edit Beer';
     }
     
-    public void function save ( rc ) {
+    public void function save ( event, rc, prc ) {
         rc.beerId = beerService.save( rc.beerId, rc.beerName, rc.breweryId,
             rc.beerType, rc.beerABV, rc.beerIBU );
         rc.subtitle = 'Edit Beer';
-        variables.fw.redirect( action='beer.edit', append='beerId');
+        setNextEvent( event='beer.edit', persist='beerID' );
     }
     
-    public void function delete ( rc ) {
-        if ( StructKeyExists( rc, 'beerId' ) && rc.beerId > 0 ) {
+    public void function delete ( event, rc, prc ) {
+        if ( event.valueExists( 'beerId' ) && rc.beerId > 0 ) {
             beerService.delete( rc.beerId );
         }
-        variables.fw.redirect( action='beer.list', append='none');
+        setNextEvent( 'beer.list' );
     }
 }

@@ -4,6 +4,16 @@ component {
     this.applicationTimeout = CreateTimeSpan( 1, 0, 0, 0 );
     this.sessionManagement = true;
     this.sessionTimeout = CreateTimeSpan( 0, 2, 0, 0 );
+    
+	// COLDBOX STATIC PROPERTY, DO NOT CHANGE UNLESS THIS IS NOT THE ROOT OF YOUR COLDBOX APP
+	COLDBOX_APP_ROOT_PATH = getDirectoryFromPath( getCurrentTemplatePath() );
+	// The web server mapping to this application. Used for remote purposes or static purposes
+	COLDBOX_APP_MAPPING   = "";
+	// COLDBOX PROPERTIES
+	COLDBOX_CONFIG_FILE 	 = "";
+	// COLDBOX APPLICATION KEY OVERRIDE
+	COLDBOX_APP_KEY 		 = "";
+    
     this.datasources = {
         BeerTracker = {
             database = "BeerTracker",
@@ -15,38 +25,40 @@ component {
         }
     };
     this.datasource = "BeerTracker";
-    this.mappings['/framework'] = expandpath( '/MVCApp/fw1/framework' );
+    this.mappings['/coldbox'] = COLDBOX_APP_ROOT_PATH & 'coldbox';
+    // Keeps code portable when you're in a sub dir.
+    this.mappings['/root'] = COLDBOX_APP_ROOT_PATH;
 
-    function _get_framework_one() {
-        if ( !structKeyExists( request, '_framework_one' ) ) {
-            request._framework_one = new MyApplication({
-                baseURL : "useRequestURI"
-                ,trace : true
-                ,reloadApplicationOnEveryRequest : true
-                //,generateSES : true
-                //,SESOmitIndex : true 
-            });
-        }
-        return request._framework_one;
-    }
 
-    // delegation of lifecycle methods to FW/1:
-    function onApplicationStart() {
-        return _get_framework_one().onApplicationStart();
-    }
-    function onError( exception, event ) {
-        return _get_framework_one().onError( exception, event );
-    }
-    function onRequest( targetPath ) {
-        return _get_framework_one().onRequest( targetPath );
-    }
-    function onRequestEnd() {
-        return _get_framework_one().onRequestEnd();
-    }
-    function onRequestStart( targetPath ) {
-        return _get_framework_one().onRequestStart( targetPath );
-    }
-    function onSessionStart() {
-        return _get_framework_one().onSessionStart();
-    }
+	// application start
+	public boolean function onApplicationStart(){
+		application.cbBootstrap = new coldbox.system.Bootstrap( COLDBOX_CONFIG_FILE, COLDBOX_APP_ROOT_PATH, COLDBOX_APP_KEY, COLDBOX_APP_MAPPING );
+		application.cbBootstrap.loadColdbox();
+		return true;
+	}
+
+	// application end
+	public boolean function onApplicationEnd( struct appScope ){
+		arguments.appScope.cbBootstrap.onApplicationEnd( arguments.appScope );
+	}
+
+	// request start
+	public boolean function onRequestStart( string targetPage ){
+		// Process ColdBox Request
+		application.cbBootstrap.onRequestStart( arguments.targetPage );
+
+		return true;
+	}
+
+	public void function onSessionStart(){
+		application.cbBootStrap.onSessionStart();
+	}
+
+	public void function onSessionEnd( struct sessionScope, struct appScope ){
+		arguments.appScope.cbBootStrap.onSessionEnd( argumentCollection=arguments );
+	}
+
+	public boolean function onMissingTemplate( template ){
+		return application.cbBootstrap.onMissingTemplate( argumentCollection=arguments );
+	}
 }

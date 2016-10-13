@@ -1,9 +1,9 @@
-component accessors="true" {
-
-    public any function init ( fw ) {
-        variables.fw = fw;
-        return this;
+component {
+    
+    public function index ( event, rc, prc ) {
     }
     
-    public void function default ( rc ) {}
+    public function onRequestStart ( event, rc, prc ) {
+        rc.startTime = getTickCount();
+    }
 }
